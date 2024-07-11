@@ -6,8 +6,8 @@ jobs:
   build:
     strategy:
       matrix:
-        otp: ["24.0"]
-        elixir: ["1.11.4", "1.16.0"]
+        otp: ["25.0"]
+        elixir: ["1.17.0"]
     name: Test - OTP ${{ matrix.otp }} - Elixir ${{ matrix.elixir }}
     runs-on: ubuntu-latest
     steps:
