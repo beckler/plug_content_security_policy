@@ -19,9 +19,13 @@ defmodule PlugContentSecurityPolicyTest do
 
       pre_built = PlugCSP.init(directives: directives)
 
+      # map order is not guaranteed
       assert pre_built ==
                {"content-security-policy",
-                "default-src 'none'; script-src 'self' 'unsafe-inline';"}
+                "default-src 'none'; script-src 'self' 'unsafe-inline';"} or
+               pre_built ==
+                 {"content-security-policy",
+                  "script-src 'self' 'unsafe-inline'; default-src 'none';"}
 
       pre_built =
         PlugCSP.init(
@@ -48,7 +52,7 @@ defmodule PlugContentSecurityPolicyTest do
           PlugCSP.init(:foo)
         end)
 
-      assert log =~ "[warn]"
+      assert log =~ "[warning]"
     end
   end
 
@@ -103,7 +107,7 @@ defmodule PlugContentSecurityPolicyTest do
           refute conn.assigns[:img_src_nonce]
         end)
 
-      assert log =~ "[warn]"
+      assert log =~ "[warning]"
     end
 
     test "logs warning if report_only is enabled with no report_uri directive ", %{conn: conn} do
@@ -112,7 +116,7 @@ defmodule PlugContentSecurityPolicyTest do
           PlugCSP.call(conn, %{directives: %{}, nonces_for: [], report_only: true})
         end)
 
-      assert log =~ "[warn]"
+      assert log =~ "[warning]"
 
       log =
         capture_log(fn ->
